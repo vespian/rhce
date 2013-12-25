@@ -1,0 +1,295 @@
+###############################
+
+DOCUMENTATION IN w /usr/share/doc/
+CHANGES MUST SURVIVE REBOOT
+REMAMBER TO TURN ON SERVICES YOU INSTALL (OR JUST REBOOT THE TEST MACHINE)
+IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
+
+###############################
+
+* processor flags required for hardware virtualization:
+  - vmx (Intel)
+  - svm (AMD)
+* sha256sum => md5sum
+* Anaconda => RedHat installation program
+* add 'text' to the kernel command line to force installation in text mode
+* przy instalacji można uzyć alt-fX by przełączać się między konsolami,
+  - F2 - zwykla konsola
+  - F3,4,5 - logi z instalacji <!!!!>
+* RHEL akceptuja "single" na commandline kernela, tak że bootują się
+  bezpośrednio do root'a
+* można zabezpieczyć się przed zmianą hasła root'a przez założenie hasła na
+  bootloadera
+  password --md5 $1$0J76U1$lhEIGjrKAL.cm2Cx8fIHB/
+* you can also password-protect a menu entry in the same way. This will make
+  grub to ask for password every time given entry was selected (but it will not
+  prevent changes to the command line)
+* you can check grub help pages by issuing 'grub' and then 'help <command'
+* mirror uzywany do instalacji:
+    http://mirror.centos.org/centos/6/os/i386/
+    http://mirror.centos.org/centos/6/os/x86_64/
+* yum - poslugiwanie sie grupami:
+    yum groupinfo base
+    yum grouplist
+* RHEL ma upstarta <!>
+* mount -o loop
+* system-config-firewall - na vanilla RHEL, jesli nei ma ferm-a ;) Ale
+  generalnie to maja zwykly skrypt do zapisywania iptablesow
+* server ftp RHEL-a: vsftpd
+* minium pamięci na RHEL to 512 MB
+* yumdownloader --source vsftpd
+* yum-builddep selinux-policy.spec
+* by default, anonymous ftp for vsftpd leads to /var/ftp/ directory, due to the
+  fact that that's ftp user homedir.
+* system-config-network - konfiguruje interfejsy, tak że nie trzeba pamiętać
+  składni
+* pamiętaj o audit2allow -b - pomoze znaleść ew. bugi w kontekstach
+* rpm -q -f `which iostat` == dpkg -S iostat
+* system-config-authconfig + yum groupinstall "Directory clients" -> enable LDAP
+  authentication for RHEL. Doing it on the commandline is a PITA. Files of inte-
+  -rest:
+  * /etc/pam_ldap.conf/etc/pam_ldap.conf
+  * /etc/openldap/ldap.conf
+  * /etc/nsswitch.conf
+* virt-install -w bridge=br_tr --prompt - test mode install of the VMs
+* chcon -v -R --reference /var/ftp /var/ft
+* you can actually install a VM using only a virt-install command:
+  virt-install -w bridge=br_tr -n centos-test02 -r 768 --disk
+  path=/dev/mapper/guests_vg-centos--test02 -l
+  http://172.17.0.4/cblr/links/Centos-6.4-x86_64/ -x
+  'ks=ftp://172.17.0.16/pub/anaconda-ks.cfg'
+* virt-clone --prompt
+* tworzenie kickstartu:
+  - bazujac na /root/anaconda-ks.cfg
+  - uzywajac system-config-kickstart
+* uzywanie kickstartu podczas instalacji RHEL:
+  - zgranie ks na jakiś nośnik
+  - edycja commandline jądra przy zabootowaniu instalatora
+  - dodanie ks=hd:sdb1:/ks.cfg lub ks=ftp://192.168.122.1/pub/ks.cfg
+* kickstart documentation: pykickstart-1.74.12-1.el6.noarch ->
+  /usr/share/doc/pykickstart-1.74.12/kickstart-docs.txt
+* sample kickstart (more information in pykickstart package !!!!):
+    install
+    url --url ftp://172.17.0.16/pub/inst #### <= this is the most important
+     # thing that is missing in original post-install kickstart
+    lang en_US.UTF-8
+    keyboard pl2
+    network --onboot yes --device eth0 --bootproto dhcp --noipv6
+    rootpw  --iscrypted $6$8Eivc6KrRg.9avuP$b9bCNXhG0nS6YyXTQAdf03hQY3DyKS...
+    firewall --service=ssh
+    authconfig --enableshadow --passalgo=sha512
+    selinux --enforcing
+    timezone --utc Europe/Warsaw
+    bootloader --location=mbr --driveorder=sda --append="crashkernel=auto rhgb quiet"
+    clearpart --all --initlabel --drives=sda
+    part / --fstype=ext4 --size=3000 --grow --fstype=ext4
+    part swap --size=512
+    reboot
+    %packages --nobase
+    @core
+    openssh-clients
+    %end
+* usefull tools:
+  elinks
+  lftp
+  mutt
+* to set up a local repo, the only thing that needs to be done is to serve
+  ISO contents with vsftpd server
+* ttys configuration in RHEL can be found in /etc/init/start-ttys.conf and
+  in /etc/sysconfig/init
+* getty - get text console - called by init(8) to open and initialize the
+  tty line, read a login name, and invoke login(1)
+* wc -l < patch : redirect a file to stdin - read it as stdin
+* find supports bash wildcards:
+    find /etc -name '???time'
+    find /etc -name '*time'
+    find /etc -name '[abc]*time'
+* in the beginig of the exam it may be beneficiary to execute mlocate's job
+* $$ - current process pid, usefull i.e. in a script:
+    renice +19 -p $$ >/dev/null 2>&1
+    ionice -c2 -n7 -p $$ >/dev/null 2>&1
+* instead of cutting/heading/tailing - USE AWK!:
+    locate -h | awk '/quiet/ {print $3}'
+* yy - copy a line in VI to the buffer, instead of ctrl+v and p
+* /etc/profile.d/ - environment variables, put an editor script here to change
+  the editor:
+    export VISUAL='/usr/bin/vim'
+    export EDITOR='/usr/bin/vim'
+* whatis - search a man page with a given word in a title
+* apropos - search a man page with a given work in the description
+* to update whatis database you need to rerun whatis cronjob - ITS LIKE
+  A MLOCATE SERVICE
+* fe80::fc54:ff:fe75:78fd/64 <- link-local address, fe80::/64 == network,
+  the adress itself is created by splitting the MAC address in half and adding
+  FF:FE in the middle
+* ::1 - loobpack address
+* :: - default address
+* ff:: - multicast address
+* ping6 - you need to specify network adapter
+  ping6 -I eth0 fe80::5054:ff:fe44:1ad1
+* ifconfig shows more data than "ip a sh", i.e. collisions
+* there are convinience scripts for up/downing the interface (they use the
+  configuration from the network config files):
+  - ifup eth0
+  - ifdown eth0
+* netstat -nr <- it shows the status of the route as well compared to 'ip r sh'.
+  This is esp. imporatnt in determing routes injected by ICMP redirect packet.
+* /etc/sysconfig/network
+  NETWORKING <- turn on/off networking
+  HOSTNAME <- hostname setup
+  NETWORKING_IPV6 <- turn on/off ipv6 networking
+  GATEWAy <- set a gateway for _all_ interfaces
+* /etc/sysconfig/network-scripts/ifcfg-eth0
+  DEVICE="eth0"
+  HWADDR="aa:bb:cc:dd:ee:ff"
+  NM_CONTROLED="yes/no" - determine whether this interface is controled by
+    network manager
+  ONBOOT="yes/no"
+  BOOTPROTO="dhcp/none" - none==static
+  IPADDR
+  NETMASK
+* dns resolving workflow:
+  /etc/nsswitch.conf <- By default among many other database search orders,
+     it defines the "hosts:" line that firstly the /etc/hosts file should be
+     consulted, and then the dns resolving should be conducted
+  /etc/hosts
+  /etc/resolv.conf <- defines the dns resolving configuration: nameservers,
+  ndots, etc...
+* dot at the end of permissions in ls output means that there are additoinal
+  permissions controled by SELinux:
+  -rwxr-xr-x. 1 root root  378 Oct 12 16:33 add_system_to_cobbler.sh
+* Something about uid/gid/euid/egid/suid/sgid
+  uid, gid - IDs of the user who executed the binary/process
+  euid, egid - effective uids/gids that take part in access policing
+  suid, sgid - used during changing uids/gids/euid/egids and droping privileges 
+    in general
+  http://stackoverflow.com/questions/8499296/realuid-saved-uid-effective-uid-whats-going-on
+  http://www.osso.nl/tech/blog/2012/08/17/setuid-seteuid-uid-euid/
+* SUID for file - change euid and suid of the process to the file owner
+* SGID for file - change egid and sgid of the process to the file group
+* SUID for directory - is ignored
+* SGID for directory - all new files inherit group ownership of this directory
+* sticky bit for file - ignored
+* sticky bit for directory - prevents other users from renaming/deleting other
+  users files even if they have rwx for that directory
+* for RHEL its not possible anymore to create file with execute permission by
+  default, even if umask is properly set
+* in order to utilize ACLs you need to remount filesystem with "acl" option
+* a plus sign at the end of permissions in ls output means that there are
+  additional ACLs applied:
+  -rw-rw-r--+ 1 kamila kamila 19 Dec  1 21:39 /home/kamila/testfile
+* file attributes
+  lsattr - list attributes for given file
+  chattr - change attributes for given file
+  +i - immutable - file cannot be changed/deleted
+  +a - file can only be appended to - no deleting/purging/changing
+* ntpq -p - list ntpd peers
+* in cases when yum metadata gets corrupted, the easies way to fix it is to:
+  * yum clean all
+  * rm -fr /var/cache/yum/*
+* getfacl <- print acl assigned to given file
+* setfacl <- set acls for given file:
+  -m u:vespian:(r|r-x|w|x|etc...) /home/kamila
+  -x u:vespian /home/kamila <- remove all acl entries for given user and
+    resource
+  -b <- remove all non-standard acl entries
+  acl format: (u|g|o):(uid|gid):perms
+* iptables flow chart - check the jpg file attached to the notes
+* /etc/sysconfig/selinux <- set the policy type to use/turn on-off selinux
+* getenforce/setenforce
+* guest_u - no GUI, no networking, no sudo
+* xguest_u - GUI, networking only via firefox
+* semanage permissive -a DOMAIN <- put a single domain into permissive mode
+* audit2allow -M <- odrazu generuje moduly!
+* recovery modes:
+  - init=/bin/sh -> if everythin is fucked up - only rootfs is mounted,
+     no scripts are started
+  - single mode -> if the system is fucked up add 'single' to the kernel
+     command line
+  - runlevel 1 -> add '1' to the kernel boot comand, type exit/CTRL-D to
+     continue booting, starts scripts in /etc/rc1.d/
+  - booting without gui - add '3' to the kernel command line
+* kernel parameters are all explained in kernel-parameters.txt file from
+  kernel-doc package
+* grub minimal command line:
+  find /boot/grub/grub.conf -> scan all partitions in search of given file
+  cat (hd0,0)/boot/grub/grub.conf -> print a given cfg file
+  root <- print a current filesystem
+* rescue mode - live image in text mode
+* runlevels:
+  0 - halt
+  1 - single user mode (but its not the same as linux-single)
+  5 - gui
+  6 - reboot
+* switching runlevels:
+  telinit 5
+* checking current runlevel:
+  runlevel -> first digit is previous runlevel, second it the current one
+* initctl - command line tool to control upstart daemon
+* ALT+LEFTARROW/RIGHTARROW - switch between adjacent terminals
+* vgextent <- extend the volume group
+* pvdisplay, vgdisplay, lvdisplay
+* right before encrypting a hard drive it is wise to fill it with random data
+* sample crypttab entry:
+  crypt-cos /dev/vdb1 (only first two fields are needed)
+* blkid - show UUID -> device mapping
+* mount -a -> synchronize fstab contents with filestystem currently mounted
+* automounter
+  - enables sysadmin to automatically mount filesystems/network shares/cdroms
+    (on access)
+  - configured via /etc/auto.{master,misc,net,smb}
+  - /etc/auto.net is executable, you can use it to list mounts on remote
+    machine (showmount util can also do it)
+  - *         server:/export/home/& <- wildcard entry, the '&' character will
+    be replaced by the specified key
+* rpm -V package-name <- verify package files for changes
+* rpm -e package-name <- erase a package
+* rpm -U package-name <- upgrade a package or install if it is not installed yet
+* /boot/symvers* <- list of kernel modules along with their versions
+* rpm -q package-name <- query a single package
+* rpm -Va <- verify all packages
+* yum-config-manager <- postconf, but for yum :)
+* yum-config-manager --disable/--enable epel <- disable/enable repository
+* yum repolist all
+* yum list <- list all packages
+* yum check-update <- == aptitutde update
+* yum downgrade <- downgrade a package
+* minimal yum repo basing on the install CD:
+  - mount DVD to /var/ftp/pub/repo, remamber to match SELinux context
+  - add folowing repo.conf file to yum configuration
+    [centosftp]
+    name=CentOS DVD via FTP
+    baseurl=ftp://192.168.122.65/pub/repo/
+    enabled=1
+* /root/install.log <- list of packages installed during instalation.
+* vipw, vigr <- like visudo but for passwd/groups file :)
+* usermod <- use it to set an expiration date for an account
+* groupmod <- use it to change GID of a group
+* chage <- password aging utility (lock, expire, expiration datae, etc...)
+* /etc/securetty - consoles on which root is allowed to log in
+* /etc/secuirity/access.conf <- a bit more fine grained control of who can login
+  using tty consoles
+* sg <- su, but for groups :)
+* su -c <- execute just one command with elevated privileges
+* sg -c <- execute given command with different group id
+* sudo -l <- lists all the commands that the user may execute using sudo
+* lshw -class network
+* /etc/skel <- default environment files for new users
+* star <- tar on steroids :)
+* vncserver:
+  - yum search tiger; yum install tigervnc{-server}
+  - yum groupinstall Xfce4
+  - vim /etc/sysconfig/vncservers
+  - useradd -m vncuser
+  - su - vncuser, vncpasswd or just start a server from a commandline
+  - add startxfce4 to /home/vespian/.vnc/xstartup (or install KDE/Gnome)
+* jobspec defining for fg/jobs/bg commands: %1
+* ps e <- show environment variables in the output
+* sar -A <- show all data gathered by sar, usually in /var/log/sa/
+
+#Optional:
+* yum --setopt=group_package_types=optional groupinstall "Remote Desktop Clients"
+* recommended way of mounting NFS shares in RHEL:
+ server1:/pub /share nfs rsize=8192,wsize=8192,timeo=14,intr,udp 0 0
+* converting ext2 to ext3: tune2fs -j /dev/sdXX
+* converting to ext4 (one-way): tune2fs -O extent,uninit_bg,dir_index /dev/vda1
