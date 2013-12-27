@@ -276,6 +276,8 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
 * lshw -class network
 * /etc/skel <- default environment files for new users
 * star <- tar on steroids :)
+  - in order to create SELinux compatible archives: -xattr and -H=exustar 
+    (create an extended attribute compatible header and store extended attributes)
 * vncserver:
   - yum search tiger; yum install tigervnc{-server}
   - yum groupinstall Xfce4
@@ -285,7 +287,18 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   - add startxfce4 to /home/vespian/.vnc/xstartup (or install KDE/Gnome)
 * jobspec defining for fg/jobs/bg commands: %1
 * ps e <- show environment variables in the output
-* sar -A <- show all data gathered by sar, usually in /var/log/sa/
+* sar -A <- show all data gathered by  sar, usually in /var/log/sa/
+* run-parts <- runs commands from given directory
+* atq, at 12:01AM, at now + 3 minutes <- run a command once at specified time
+* /etc/cron.allow <- list users allowed to do crontab -e, /etc/cron.deny is ig-
+  nored
+* /etc/cron.deny <- list users denied crontab -e, cron.allow takes precedence
+  though
+* /etc/at.{allow,deny} <- similar to cron.{allow,deny}
+* utmpdump btmp <- list failed login attempts
+* lastlog <- list last successful logins for local users
+
+
 
 #Optional:
 * yum --setopt=group_package_types=optional groupinstall "Remote Desktop Clients"
