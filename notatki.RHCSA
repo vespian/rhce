@@ -227,7 +227,6 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   runlevel -> first digit is previous runlevel, second it the current one
 * initctl - command line tool to control upstart daemon
 * ALT+LEFTARROW/RIGHTARROW - switch between adjacent terminals
-* vgextent <- extend the volume group
 * pvdisplay, vgdisplay, lvdisplay
 * right before encrypting a hard drive it is wise to fill it with random data
 * sample crypttab entry:
@@ -276,11 +275,11 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
 * lshw -class network
 * /etc/skel <- default environment files for new users
 * star <- tar on steroids :)
-  - in order to create SELinux compatible archives: -xattr and -H=exustar 
+  - in order to create SELinux compatible archives: -xattr and -H=exustar
     (create an extended attribute compatible header and store extended attributes)
 * vncserver:
   - yum search tiger; yum install tigervnc{-server}
-  - yum groupinstall Xfce4
+  - yum groupinstall Desktop
   - vim /etc/sysconfig/vncservers
   - useradd -m vncuser
   - su - vncuser, vncpasswd or just start a server from a commandline
