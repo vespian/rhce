@@ -134,20 +134,8 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   - ifdown eth0
 * netstat -nr <- it shows the status of the route as well compared to 'ip r sh'.
   This is esp. imporatnt in determing routes injected by ICMP redirect packet.
-* /etc/sysconfig/network
-  NETWORKING <- turn on/off networking
-  HOSTNAME <- hostname setup
-  NETWORKING_IPV6 <- turn on/off ipv6 networking
-  GATEWAy <- set a gateway for _all_ interfaces
-* /etc/sysconfig/network-scripts/ifcfg-eth0
-  DEVICE="eth0"
-  HWADDR="aa:bb:cc:dd:ee:ff"
-  NM_CONTROLED="yes/no" - determine whether this interface is controled by
-    network manager
-  ONBOOT="yes/no"
-  BOOTPROTO="dhcp/none" - none==static
-  IPADDR
-  NETMASK
+* /etc/sysconfig/network -> /usr/share/doc/initscripts-*/sysconfig.txt
+* /etc/sysconfig/network-scripts/ifcfg-eth0 -> /usr/share/doc/initscripts-*/sysconfig.txt
 * dns resolving workflow:
   /etc/nsswitch.conf <- By default among many other database search orders,
      it defines the "hosts:" line that firstly the /etc/hosts file should be

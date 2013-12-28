@@ -1,0 +1,7 @@
+* NSA recommendations:
+  - less software == the better
+  - central firewall + local firewalls
+  - policy DROP for all chains
+  - 
+* /proc/sys/net/ipv4/ip_forward == /proc/sys/net/ipv4/ip_forward
+
