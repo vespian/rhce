@@ -2,6 +2,24 @@
   - less software == the better
   - central firewall + local firewalls
   - policy DROP for all chains
-  - 
 * /proc/sys/net/ipv4/ip_forward == /proc/sys/net/ipv4/ip_forward
-
+* xinetd:
+  - access restrictions: only_from, no_access
+* tcp wrappers:
+  - check whether libwrap library is linked to the binary and host_access is
+  somewhere in 'strings' output
+  - /etc/hosts.{allow,deny} - allow has higher priority, default means allow
+  - man hosts_access
+  - example syntax:
+    ALL: .vespian.net EXCEPT 1.2.3.4
+    sshd: 12.4.2.0/255.255.255.0
+    ALL EXCEPT sshd: 10.0.0.1
+    ALL: ALL
+  - the name of the binary matters, even if running through xinetd
+* iptables can translate domain names!
+  iptables -A INPUT -s youtube.com -j REJECT
+  -A INPUT -s 173.194.112.167/32 -j REJECT --reject-with icmp-port-unreachable
+  -A INPUT -s 173.194.112.161/32 -j REJECT --reject-with icmp-port-unreachable
+  etc...
+* pam has excellent HTML doc -> /usr/share/doc/pam-*/html/
+* 
