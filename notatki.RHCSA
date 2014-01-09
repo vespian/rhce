@@ -230,6 +230,8 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   - *         server:/export/home/& <- wildcard entry, the '&' character will
     be replaced by the specified key
 * rpm -V package-name <- verify package files for changes
+* rpm -K package-file <- verify package signature
+* rpm -qi package-name <- query package information
 * rpm -e package-name <- erase a package
 * rpm -U package-name <- upgrade a package or install if it is not installed yet
 * /boot/symvers* <- list of kernel modules along with their versions

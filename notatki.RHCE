@@ -6,8 +6,7 @@
 * xinetd:
   - access restrictions: only_from, no_access
 * tcp wrappers:
-  - check whether libwrap library is linked to the binary and host_access is
-  somewhere in 'strings' output
+  - check whether libwrap library is linked to the binary
   - /etc/hosts.{allow,deny} - allow has higher priority, default means allow
   - man hosts_access
   - example syntax:
@@ -22,4 +21,8 @@
   -A INPUT -s 173.194.112.161/32 -j REJECT --reject-with icmp-port-unreachable
   etc...
 * pam has excellent HTML doc -> /usr/share/doc/pam-*/html/
-* 
+* pam_listfile can be used to limit per-user access. Check vsftpd pam access
+  module
+* SHA-1 is being phased out, SHA-2 includes four hash functions with message
+  digests of up to 512 bits (SHA-512)
+ 
