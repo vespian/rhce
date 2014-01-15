@@ -2,7 +2,7 @@
   - less software == the better
   - central firewall + local firewalls
   - policy DROP for all chains
-* /proc/sys/net/ipv4/ip_forward == /proc/sys/net/ipv4/ip_forward
+* /proc/sys/net/ipv4/ip_forward, net.ipv4.ip_forward
 * xinetd:
   - access restrictions: only_from, no_access
 * tcp wrappers:
@@ -27,7 +27,7 @@
 * SHA-1 is being phased out, SHA-2 includes four hash functions with message
   digests of up to 512 bits (SHA-512)
 * man -k != apropos. apropos is case-sensitive
-* while defining file context, remamber to use wildcards !
+* while defining file context, remember to use wildcards !
   semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?"
 * ssh-copy-id -> tool to automatically propagate user identities (ssh-keys,
   .ssh directories, etc...)
@@ -53,6 +53,39 @@
         c = 65^17 mod(3233) = 2790
     To decrypt c = 2790, we calculate
         m = 2790^2753 mod(3233) = 65
-* how SSH session is established
-
+* letter 'p' in the name of the openssh package/binary means that the portabi-
+  - lity goop was added. OpenSSH core is developed clearly for OpenBSD.
+* for SSH, asymmetric encryption is only used to share the secret key, which
+  will be used for symmetric encryption
+* SSHv2 session establishment:
+  - sshv2 operates in 3 distinte layers:
+    % transport layer - provides encrypted pipe for upper pipes, capable of
+                        reliably and securely tranfer plaintext data from upper
+                        layers.
+    % authentication layer - takes care of authenticating the user (challege-
+                             response authentication, pubkey authentication,
+                             etc...)
+    % connection layer - is capable of multiplexing any number of independent
+                         secure sessions over a single authentication layer
+  - transport layer establishement:
+    % TCP connection is established
+    % protocol and software versions are exchanged/verified
+    % server advertises its supported protocol version and software version:
+      SSH-2.0-OpenSSH_5.3
+      ...
+    % client advertises its supported protocol version and software as well:
+      SSH-2.0-OpenSSH_6.4
+      ...
+    % both parties switch to binary protocol
+    % key exchange and channel enc. algorithms are negotiated
+    % In case when Diffie–Hellman key exchange was choosen, booth hosts
+      participate in defining session key, so that it is not exchanged via
+      insecure channel.
+    % the server presents its identity to the client (host key), client checks
+      its signature with the one stored in known_hosts file
+  - authentication layer establishment - the client authenticates itself to the
+    server. It can be either pubkey auth or a pre-shared key (password auth)
+  - connection layer setup - X11 forwarding, terminal, port forwarding, etc..
+* ssh-copy-id -> installs public keys on the remote machine, creating .ssh
+  directories if necessary
 
