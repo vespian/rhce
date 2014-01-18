@@ -203,6 +203,7 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   find /boot/grub/grub.conf -> scan all partitions in search of given file
   cat (hd0,0)/boot/grub/grub.conf -> print a given cfg file
   root <- print a current filesystem
+  tab-completion!
 * rescue mode - live image in text mode
 * runlevels:
   0 - halt
@@ -220,7 +221,8 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
 * sample crypttab entry:
   crypt-cos /dev/vdb1 (only first two fields are needed)
 * blkid - show UUID -> device mapping
-* mount -a -> synchronize fstab contents with filestystem currently mounted
+* mount -a -> synchronize fstab contents with filestystem currently mounted (but
+  it does not change mount-flags)
 * automounter
   - enables sysadmin to automatically mount filesystems/network shares/cdroms
     (on access)
@@ -228,7 +230,7 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   - /etc/auto.net is executable, you can use it to list mounts on remote
     machine (showmount util can also do it)
   - *         server:/export/home/& <- wildcard entry, the '&' character will
-    be replaced by the specified key
+    be replaced by the specified key (man 5 autofs)
 * rpm -V package-name <- verify package files for changes
 * rpm -K package-file <- verify package signature
 * rpm -qi package-name <- query package information

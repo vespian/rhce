@@ -116,3 +116,35 @@
     semanage port -l | grep http
     semanage port -a -p tcp -t http_port_t 123
 * ausearch -> a convinient tool to search/grep audit logs
+* column -t -> arrange output into collumns
+* TLS was originally developed by Netscape as SSL, but as it lost its market
+  share, its mainenance was taken over by IETF and it was renamed to TLS
+  (Transport Layer Security)
+* TLS negotiation:
+  - TCP connect (SYN/SYN+ACK/ACK)
+  - client -> server ("Client Hello"):
+    % SNI server identification
+    % supported cipher suites, ordered by client preference
+    % session ID - if the server still has negotiated session keys, then the
+      expensive asymetric cryptography can be avoided. Session ID is provided
+      by the server.
+  - server -> client ("Server Hello"):
+    % session ID - stored by the client in case it wants to reconnect
+    % selected cipher from those supported by the client
+  - server -> client ("Certificate")
+    % provides a certificate/certificate chain (up to self-signed root CA)
+  - server -> client ("Hello Done")
+    % indicates that the server will not be asking client for certificates
+  ---- the rest depends on chosen encryption algorithm:
+  - client sends a pre-master key encrypted with server's public key
+  - server sends back salted master key
+  - session starts to be encrypted using calculated keys
+* these are equivalent:
+  if test -x /etc/something;
+  if [ -x /etc/something ]
+
+
+# Requirements that need checking:
+  - SELinux
+  - bash scripting
+  - 
