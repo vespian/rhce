@@ -15,6 +15,7 @@
     ALL EXCEPT sshd: 10.0.0.1
     ALL: ALL
   - the name of the binary matters, even if running through xinetd
+  - when permitting some host make sure that you deny all other in hosts.deny
 * rpmconfig - tool to merge all the *.rpmsave files
 * iptables can translate domain names!
   iptables -A INPUT -s youtube.com -j REJECT
@@ -88,4 +89,30 @@
   - connection layer setup - X11 forwarding, terminal, port forwarding, etc..
 * ssh-copy-id -> installs public keys on the remote machine, creating .ssh
   directories if necessary
-
+* GatewayPorts -> allows remote hosts to connect to ports forwarded by the sshd
+* Limiting access to ssh on per-user basis:
+  AllowUsers usr1 usr2
+  AllowUsers usr1@1.2.3.4 usr2@2.3.4.5
+  AllowGroups, DenyUsers, DenyGroups
+* Limiting access to ssh on per-host basis - iptables, or TCPWrappers
+* loading modules on boot should be done by /etc/rc.modules instead of
+  /etc/rc.local. It is executed much earlier in the boot process.
+  echo modprobe nf_conntrack_ftp >> /etc/rc.modules
+  chmod a+x /etc/rc.modules
+* semanage fcontext -l -C -> a way to find customized file contexts on a host
+* selinux-policy-doc -> this package contains extra selinux policy documentation
+  , i.e. detailed info on selinux booleans
+* yum repolist all -> list ALL repositories, disabled included
+* yum --disablerepo '*' --enablerepo  'rpmfusion-nonfree' list available ->
+  list available packages from given repo
+* install all optional packages with yum:
+  yum --setopt=group_package_types=optional groupinstall "Your Package Group"
+* yum list installed | grep @repo-id -> list packages installed from given repo
+* Centos no longer ships with SRPMs in their repos, one needs to set up
+  Centos-Vault repo
+* semanage permissive -a ssh_t -> make just one module work in permissive mode,
+  everything else is still enforcing
+* semanage port -l  -> selinux defines allowed set of ports for applications
+    semanage port -l | grep http
+    semanage port -a -p tcp -t http_port_t 123
+* ausearch -> a convinient tool to search/grep audit logs
