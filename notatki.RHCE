@@ -78,7 +78,9 @@
       SSH-2.0-OpenSSH_6.4
       ...
     % both parties switch to binary protocol
-    % key exchange and channel enc. algorithms are negotiated
+    % the list of supported encryption protocols is presented by the client
+    % server responds with the list of the algorithms it is willing to accept
+      (???)
     % In case when Diffie–Hellman key exchange was choosen, booth hosts
       participate in defining session key, so that it is not exchanged via
       insecure channel.
@@ -142,9 +144,70 @@
 * these are equivalent:
   if test -x /etc/something;
   if [ -x /etc/something ]
-
-
-# Requirements that need checking:
-  - SELinux
-  - bash scripting
+* rpmbuild -bb/-ba -> bild only binary or binary and source packages
+* rpm package building:
+  - never build as a root user
+  - take some src package as an example
+  - create directory ProgramName-X.XX
+  - create empty configure script or simply remove the %configure macro
+  - move the required file to the created directory
+  - compress dir -> ProgramName-X.XX.tar.bz2
+  - rpmdev-setuptree
+  - tar.bz2 ->  rpmbuild/SOURCES
+  - rpmdev-newspec programname
+  - %setup - its a macro intented to uncompress tar archive in the
+    rpmbuild/SOURCES directory
+  - Groups: -> less /usr/share/doc/rpm-*/GROUPS
+  - +BuildArch: noarch
+  - comment out unneded
+  - use install command in the %install section
+  - %files section contains all the files owned by the package
+  - rpmlint can give you hints on what is wrong
+* static routes handling in RHEL:
+  - DISABLE NETWORK MANAGER!
+  - grep route- /usr/share/doc/initscripts-9.03.40/*
+  - /etc/sysconfig/network-scripts/route-ethXX have two file formats:
+    % old/simple:
+        ADDRESS0=
+        NETMASK0=
+        GATEWAY0=
+    % iproute2:
+        default via 172.17.0.1 dev eth0
+    % order of default root parsing is:
+        /etc/sysconfig/network
+        /etc/sysconfig/network-scripts/ifcfg-eth0
+        /etc/sysconfig/network-scripts/ifcfg-eth1
+        ...
+        /etc/sysconfig/network-scripts/ifcfg-ethXX
+        /etc/sysconfig/network-scripts/route-eth0
+* system-config-authconfig + yum groupinstall "Directory client" -> enable
+  Kerberos authentication for RHEL. Doing it on the commandline is a PITA.
+  - Files of interest:
+    % /etc/sssd/sssd.conf
+    % /etc/pam_ldap.conf/etc/pam_ldap.conf
+    % /etc/openldap/ldap.conf
+    % /etc/nsswitch.conf
+  - remember that machines must be synchronized!
+* iSCSI:
+  - initiator is a client
+  - target is a shared storage on the server
+  - LUN represents an individually addressable (logical) SCSI device that is
+    part of a physical SCSI device (target). In an iSCSI environment, LUNs are
+    essentially numbered disk drives
+  - runs on TCP
+  - iSCSI naming format:
+    type.date_the_domain_was_taken.reversed_domain.storage_target_name
+    iqn.1992-01.com.example:storage:diskarrays-sn-a8675309
+* setting up system as an iscsi initiator:
+  - open port 3260
+  - install iscsi-initiator-utils.x86_64/iscsiadm
   - 
+
+
+
+# Requirements that need more practice:
+  - kebersos+ldap
+  - rpm packaging
+
+  - bash scripting
+  - SELinux
