@@ -161,7 +161,8 @@
   - +BuildArch: noarch
   - comment out unneded
   - use install command in the %install section
-  - %files section contains all the files owned by the package
+  - %files section contains all the files owned by the package, use %dir
+    keyword to list directories
   - rpmlint can give you hints on what is wrong
 * static routes handling in RHEL:
   - DISABLE NETWORK MANAGER!
@@ -201,7 +202,17 @@
 * setting up system as an iscsi initiator:
   - open port 3260
   - install iscsi-initiator-utils.x86_64/iscsiadm
-  - 
+  - chkconfig iscsid on
+  - /usr/share/doc/iscsi-initiator-utils-*/README
+  - mount by UUID(device names sometimes change), add _netdev to options(so
+    that system does not try to mount it before net has started), and make sure
+    that iscsi daemons are started at boot
+  - remamber to set correct credentials (just one, not all of them or things
+    will brake)
+  - iscsiadm -m discovery -t sendtargets --portal 172.16.201.200
+  - iscsiadm -m session -P3
+  - iscsiadm -m node -p 172.17.0.100 --login
+  - iscsiadm -m node -p 172.17.0.100 --logout
 
 
 
