@@ -207,14 +207,49 @@
   - mount by UUID(device names sometimes change), add _netdev to options(so
     that system does not try to mount it before net has started), and make sure
     that iscsi daemons are started at boot
-  - remamber to set correct credentials (just one, not all of them or things
+  - remember to set correct credentials (just one, not all of them or things
     will brake)
   - iscsiadm -m discovery -t sendtargets --portal 172.16.201.200
   - iscsiadm -m session -P3
   - iscsiadm -m node -p 172.17.0.100 --login
   - iscsiadm -m node -p 172.17.0.100 --logout
+* null client - MTA that can only receive mail
+* alternatives --config mta -> if somehow non-default postfix is installed
+* authentication via cyrus-sasl (there is a README in doc/ depicting 
+  all of these steps):
+  - /etc/sysconfig/saslauthd (MECH=pam)
+  - main.cf modifications
+    % smtpd_sasl_auth_enable
+    % smtpd_sasl_security_options
+    % broken_sasl_auth_clients
+    % smtpd_recipient_restrictions (permit_sasl_authenticated,
+      permit_mynetworks, reject_unauth_destination)
+  - restart postfix, saslauthd enable
+* man 5 postconf -> all main.cf parameters :) Can be found in 
+* remember about reloading postfix ;)
+* source IP(client) restrictions:
+  - /etc/postfix/access, postmap
+  - smtpd_client_restrictions (permit_mynetworks, check_client_access, reject)
+* encrypting AUTH PLAIN username/password:
+    echo -ne '\0username\0password' | base64
+* testing saslauthd authentication:
+    testsaslauthd -u mailer1 -p test1234 -s smtp
+* accepting mail from remote systems:
+  - inet_interfaces
+  - myhostname/destination/origin/domain/etc...
+* relay mail through external host:
+  - relayhost -> relay all non-local mail
+    % dupa.pl -> relay to dupa.pl's MX records
+    % [dupa.pl] -> relay to the A record of the dupa.pl domain
+  - smarthost:
+    % relay_domains -> relay only selected domains, overrides relayhost
+    % relay_transport -> define how/where mail should be relayedqqq
+    % relay_recipient_maps -> define valid users for relayed mail
+* postconf -n -> show non-default values
 
 
+#To do:
+/usr/share/doc/postfix-2.6.6/README-Postfix-SASL-RedHat.txt
 
 # Requirements that need more practice:
   - kebersos+ldap
@@ -222,3 +257,6 @@
 
   - bash scripting
   - SELinux
+
+# Optional:
+
