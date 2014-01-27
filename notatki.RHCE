@@ -246,6 +246,12 @@
     % relay_transport -> define how/where mail should be relayedqqq
     % relay_recipient_maps -> define valid users for relayed mail
 * postconf -n -> show non-default values
+* postqueue, postcat, postsuper, etc...
+* setting myorigin gives you an advantage of append_dot_mydomain, usefull for
+  single-domain machines
+* /etc/postfix/aliases -> for local mail deliver, update with postalias
+  /etc/aliases
+
 
 
 #To do:
