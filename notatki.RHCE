@@ -270,6 +270,24 @@
   - remamber about selinux booleans
   - access control examples are bit below ;)
 * httpd -S, httpd -h
+* ServerName -> ServerAlias
+* self-singed certs, Vhost examples, etc..  -> in the doc(-newkey rsa:1024_,
+   or the Makefile from /etc/pki/tls/certs directory, or the genkey utility
+* IP-based virtual hosts - no NameVirtual host, and virtual host stanza in
+  form of <VirtualHost 111.44.55.66:80>
+* _default_ directive -> catch requests for requests that are not covered by
+  ip-based virtual hosts, nor the Namevirtualhosts
+* openssl ciphers -v '-ALL:LOW' -> deciphering cipher selection for openssl
+* currenltly, 1024 rsa keys are considered insecure, at least 2048 bits keys
+  are recommended
+* deploying CGI applications in Apache:
+  - there is a how-to in the manual
+  - ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+  - minimal script:
+    #!/bin/bash
+    echo -e "Content-type: text/html\n\n"
+    uname -a
+
 
 
 
