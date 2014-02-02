@@ -251,6 +251,25 @@
   single-domain machines
 * /etc/postfix/aliases -> for local mail deliver, update with postalias
   /etc/aliases
+* generally try to copy existsing contexts (/var/www/ -> i.e. /www/) while
+  defining new ones and remamber about being recursive ;)
+* .htaccess in userdir, Options None, AllowOverride None
+* host based access controls (howto - access):
+  - Location, Directory
+  - Allow, Deny, Options, AllowOverride
+  - Listen
+* "Run time configuration Directives" == "All main.cf parameters"
+* user based access controls:
+  - htpasswd -c secrets/passwords vespian
+  - (howto - auth)
+  - remember about Require valid-user
+* adding 'diffrent_username@' in front of the url forces browser to forget
+  stored credentials and ask user for new ones
+* userdir access:
+  - (howto - public_html)
+  - remamber about selinux booleans
+  - access control examples are bit below ;)
+* httpd -S, httpd -h
 
 
 
