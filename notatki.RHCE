@@ -236,7 +236,7 @@
     testsaslauthd -u mailer1 -p test1234 -s smtp
 * accepting mail from remote systems:
   - inet_interfaces
-  - myhostname/destination/origin/domain/etc...
+  - my(hostname|destination|origin|domain|etc...)
 * relay mail through external host:
   - relayhost -> relay all non-local mail
     % dupa.pl -> relay to dupa.pl's MX records
@@ -267,7 +267,9 @@
   stored credentials and ask user for new ones
 * userdir access:
   - (howto - public_html)
-  - remamber about selinux booleans
+  - mod_userdir
+  - remember about selinux booleans
+  - setting ACL entries for Apache for user directories
   - access control examples are bit below ;)
 * httpd -S, httpd -h
 * ServerName -> ServerAlias
@@ -282,7 +284,8 @@
   are recommended
 * deploying CGI applications in Apache:
   - there is a how-to in the manual
-  - ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+  - ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/ or Options ExecCGI and
+    AddHandler cgi-script .sh
   - minimal script:
     #!/bin/bash
     echo -e "Content-type: text/html\n\n"
