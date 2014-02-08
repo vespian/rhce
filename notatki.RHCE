@@ -59,7 +59,7 @@
 * for SSH, asymmetric encryption is only used to share the secret key, which
   will be used for symmetric encryption
 * SSHv2 session establishment:
-  - sshv2 operates in 3 distinte layers:
+  - sshv2 operates in 3 distinct layers:
     % transport layer - provides encrypted pipe for upper pipes, capable of
                         reliably and securely tranfer plaintext data from upper
                         layers.
@@ -290,7 +290,37 @@
     #!/bin/bash
     echo -e "Content-type: text/html\n\n"
     uname -a
+* CIFS is a "dialect" of the SMB protocol.
+  - CIFS is strictly 445/tcp, SMB is udp(137,138,139)
+  - CIFS is just a new name for one of the lates incarnations of the SMB
+    protocols
+* CIFS is not only a remote file system, it is also an IPC and printer sharing
+  protocol, Samba implements CIFS protocol
+* CIFS can run on TCP(port 445) or use NetBIOS and through it - various other
+  protocols (udp 137,138,139, etc...)
+* Samba demons:
+  - smbd - file and printer sharing, authentication and authorization for SMB
+  clients
+  - nmbd - NETBIOS name registration, NetBios Name Server(WINS, now deprecated)
+  - windbindd - authentication, group membership
+* workgroup is a tag that identifies a collection of computers and their
+  resources on an SMB/CIFS network
+* WINS - central service intended to replace broadcase name resolution used by
+  NetBios
+* NetBios names are flat, 15 characters wide
+* Samba uses ports 137,138,139 and 445
+* paths that need to be shared via Sambe have to either be tagged with
+  samba_share_t, or use:
+  - samba_export_all_ro
+  - samba_export_all_rw
+  - use_samba_home_dirs
+* yum groupinstall 'CIFS file server'
+* enable services /etc/init.d/{smb,nmb,winbind}
+*
 
+
+#TO DO:
+- smbstatus
 
 
 
