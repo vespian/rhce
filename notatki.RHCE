@@ -291,13 +291,13 @@
     echo -e "Content-type: text/html\n\n"
     uname -a
 * CIFS is a "dialect" of the SMB protocol.
-  - CIFS is strictly 445/tcp, SMB is udp(137,138,139)
+  - CIFS is strictly 139,445/tcp, SMB is udp(137,138)
   - CIFS is just a new name for one of the lates incarnations of the SMB
     protocols
 * CIFS is not only a remote file system, it is also an IPC and printer sharing
   protocol, Samba implements CIFS protocol
 * CIFS can run on TCP(port 445) or use NetBIOS and through it - various other
-  protocols (udp 137,138,139, etc...)
+  protocols (udp 137,138, tcp 139, etc...)
 * Samba demons:
   - smbd - file and printer sharing, authentication and authorization for SMB
   clients
@@ -305,32 +305,86 @@
   - windbindd - authentication, group membership
 * workgroup is a tag that identifies a collection of computers and their
   resources on an SMB/CIFS network
-* WINS - central service intended to replace broadcase name resolution used by
+* WINS - central service intended to replace broadcast name resolution used by
   NetBios
 * NetBios names are flat, 15 characters wide
-* Samba uses ports 137,138,139 and 445
+* Samba uses ports 137,138(udp) and 139,445(tcp)
 * paths that need to be shared via Sambe have to either be tagged with
   samba_share_t, or use:
   - samba_export_all_ro
   - samba_export_all_rw
-  - use_samba_home_dirs
+  - samba_enable_home_dirs
 * yum groupinstall 'CIFS file server'
 * enable services /etc/init.d/{smb,nmb,winbind}
-*
+* testparm - check Samba`s configuration
+* smbstatus - shows who ATM is connected to this server, locks, and etc...
+* smbpasswd - allows to manage user's passowords, i.e. used for authenticating
+  share access
+  - only users with existing UNIX accounts can be added
+  - in case a mapping is needed: user\ map@smb.conf
+  - pdbedit -L -> list existing users
+  - location of the database depends on the chosen backend. In case of tsa it
+    is /var/lib/samba/private/passdb.tdb
+* smbclient - helps to verify share's configuration, provides ftp-like
+  interface, and allows to check the configured WORKGROUP:
+  smbclient -U vespian  \\\\172.17.0.16\\share_ves
+  smbclient -U vespian -L \\\\172.17.0.16
+* Samba server  does not grant more access than the host system => unix/SeLinux
+  file sytem permissions apply.
+* guest -> gest\ account@smb.conf -> maps guest user to UNIX user (nobody)
+* share's most important params:
+  [name, visible to M$ clients]
+  comment
+  path
+  guest ok - if set to yes, no password is required and user is mapped to
+             guest\ account(nobody)
+  writable -> inverted synonym for read\ only
+  write\ list -> these users are granted write privileges, no matter what the
+                  read\ only param is set to
+  valid\ users -> users allowed to use this share. If empty (default) all users
+                  are allowed.
+  invalid\ users -> users not allowed to use the service.
+  browsable -> share will not show in the network share list window. Something
+               like hidden SSID
+  hosts allow, hosts deny -> check smb.conf(5), can be specified globally and
+                             per share
+  create mask -> umask, but for samba shares
+  directory mask -> same as create\ mask, but for directories
+  guest account -> see above
+* [homes] -> users login is converted to a share with path set to user's home
+  directory (unless path param is provided)
+* creating a share:
+  - iptables/firewall
+  - yum groupinstall 'CIFS...'
+  - services start&enable smb, nmb, winbind
+  - selinux -> either relabel with samba_share_t or fix booleans
+  - smbpasswd
+  - smb.conf
+    * add share definitions
+    * change workgroup, netbios name if necessary
+* mounting a CIFS share:
+    - yum install cifs-utils (or search for mount.cifs)
+    - mount -t cifs '//172.17.0.16/public' /mnt/ -o username=vespian
+    - mount.cifs '//172.17.0.16/public' /mnt/ -o username=vespian
+    - the 'credentials' option can be used to hide user/pass credentials from
+      prying eyes
+* samba-swat, but it is unavailable in standard RHEL repo during the exam
+* creating a publicly available share:
+  - map to guest = Bad User
+  - guest account = pcguest (REQUIRES RESTART)
+  - useradd -c "Guest User" -d /dev/null -s /bin/false pcguest
+  - public = yes, read only = no, path, comment
+  - smbclient4 //172.17.0.16/public -Unot_a_user%foo
+  - not required is smbpasswd step
+* samba-doc -> not very usefull though... :(
+* samba's ACL host\ allow|host\ deny are very similar to tcpwrapper's one ->
+  see the documentation host\ access(5)
 
 
 #TO DO:
-- smbstatus
-
-
-
-#To do:
-/usr/share/doc/postfix-2.6.6/README-Postfix-SASL-RedHat.txt
 
 # Requirements that need more practice:
   - kebersos+ldap
-  - rpm packaging
-
   - bash scripting
   - SELinux
 
