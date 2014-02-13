@@ -379,9 +379,38 @@
 * samba-doc -> not very usefull though... :(
 * samba's ACL host\ allow|host\ deny are very similar to tcpwrapper's one ->
   see the documentation host\ access(5)
-
+* yum groupinstall NFS\ file\ server
+* nfs services:
+  - /etc/init.d/rpcbind start
+  - /etc/init.d/nfs start
+  - nfslock (only for v2 and v3)
+* nfs tools:
+  - nfsstat
+  - nfsiostat 1 190 /mnt/public/
+  - nfs4_*acl
+* Definitions in /etc/exports should be exported: exportfs -ra, but they can be
+  also unexported: exportfs -ua (maintenance)
+* NFS through firewall:
+  - 2049/tcp, 111/tcp&udp -> firwall ports for NFSv4
+  - MOUNTD_PORT="port"
+  - STATD_PORT="port"
+  - LOCKD_TCPPORT="port"
+  - LOCKD_UDPPORT="port"
+  - rpcinfo -p <- verify which TCP/UDP ports that are used
+* watch out for spaces while editing /etc/export -> space between host and
+  params may give access to all hosts
+* allsquash - treat all users as nobodys :)
+* to see ale the exports you can:
+  - showmount -e <host_ip>
+  - mount myserver:/ /mnt/ (NFSv4 has only one root)
+  - On servers that support both NFSv4 and either NFSv2 or NFSv3, both methods
+    will work and give the same results.
 
 #TO DO:
+nfsiostat
+showmount
+
+
 
 # Requirements that need more practice:
   - kebersos+ldap
