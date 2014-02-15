@@ -396,7 +396,7 @@
   - STATD_PORT="port"
   - LOCKD_TCPPORT="port"
   - LOCKD_UDPPORT="port"
-  - rpcinfo -p <- verify which TCP/UDP ports that are used
+  - rpcinfo -p <- verify which TCP/UDP ports are used
 * watch out for spaces while editing /etc/export -> space between host and
   params may give access to all hosts
 * allsquash - treat all users as nobodys :)
@@ -405,6 +405,13 @@
   - mount myserver:/ /mnt/ (NFSv4 has only one root)
   - On servers that support both NFSv4 and either NFSv2 or NFSv3, both methods
     will work and give the same results.
+* the 'nobody:nobody' mapping problem in NFSv4 -> domain setting for idmapd 
+  may be incorrect
+* status of the nfsd:
+  cat  /var/lib/nfs/etab -> full description of exported shares
+  cat  /proc/fs/nfsd/* -> /proc entries, esp. interesting is versions
+
+
 
 #TO DO:
 nfsiostat
