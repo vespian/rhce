@@ -277,7 +277,7 @@
    or the Makefile from /etc/pki/tls/certs directory, or the genkey utility
 * IP-based virtual hosts - no NameVirtual host, and virtual host stanza in
   form of <VirtualHost 111.44.55.66:80>
-* _default_ directive -> catch requests for requests that are not covered by
+* _default_ directive -> catch requests for webpages that are not covered by
   ip-based virtual hosts, nor the Namevirtualhosts
 * openssl ciphers -v '-ALL:LOW' -> deciphering cipher selection for openssl
 * currenltly, 1024 rsa keys are considered insecure, at least 2048 bits keys
@@ -381,7 +381,7 @@
   see the documentation host\ access(5)
 * yum groupinstall NFS\ file\ server
 * nfs services:
-  - /etc/init.d/rpcbind start
+  - /etc/init.d/rpcbind start (BOTH CLIENT AND SERVERS!!!)
   - /etc/init.d/nfs start
   - nfslock (only for v2 and v3)
 * nfs tools:
@@ -405,18 +405,38 @@
   - mount myserver:/ /mnt/ (NFSv4 has only one root)
   - On servers that support both NFSv4 and either NFSv2 or NFSv3, both methods
     will work and give the same results.
-* the 'nobody:nobody' mapping problem in NFSv4 -> domain setting for idmapd 
-  may be incorrect
+* the 'nobody:nobody' mapping problem in NFSv4:
+  - domain setting for idmapd may be incorrect
+  - nfsidmap -c -> clear idmap cache, restart rpcidmapd to be sure
+  - on both server and client there should be a user with correct uid/gid
+  - remount to NFSv3 ;)
+* wildcards and single hosts:
+    /               master(rw) trusty(rw,no_root_squash)
+    - exports to everybody as rw
+    - disables root squash for host trusty
 * status of the nfsd:
   cat  /var/lib/nfs/etab -> full description of exported shares
-  cat  /proc/fs/nfsd/* -> /proc entries, esp. interesting is versions
-
+  cat  /proc/fs/nfsd/* -> /proc entries, esp. interesting is versions file
+* relevant config options:
+  - default anonymous ftp user is defined in 'ftp_username' var, its home dire-
+    -ctory is the directory where anonymous users end up
+  - local_enable=NO -> disabling localuser access in vsftpd
+  - anonymous_enable=NO -> disable anonymous access access in vsftpd
+* vsftpd SElinux related:
+  - ftp_home_dir - enables access to users home directories
+  - allow_ftpd_anon_write - enable write access for anonymous users
+  - public_content_t/public_content_rw_t - files accessed by anonymous users must
+                                         be marked with one of these types
+* in order to enable anonyous uploads:
+  - change type to public_content_rw_t
+  - allow_ftpd_anon_write
+  - anon_upload_enable&anon_mkdir_write_enable@vsftpd.conf
+  - fix directory permissions/owner
+* .message file + dirmessage_enable=yes@vsftpd.conf -> present the user a short
+  message when he enters a directory for a first time durin a session
 
 
 #TO DO:
-nfsiostat
-showmount
-
 
 
 # Requirements that need more practice:
