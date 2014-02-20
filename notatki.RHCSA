@@ -25,9 +25,6 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   grub to ask for password every time given entry was selected (but it will not
   prevent changes to the command line)
 * you can check grub help pages by issuing 'grub' and then 'help <command'
-* mirror uzywany do instalacji:
-    http://mirror.centos.org/centos/6/os/i386/
-    http://mirror.centos.org/centos/6/os/x86_64/
 * yum - poslugiwanie sie grupami:
     yum groupinfo base
     yum grouplist
@@ -41,9 +38,7 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
 * yum-builddep selinux-policy.spec
 * by default, anonymous ftp for vsftpd leads to /var/ftp/ directory, due to the
   fact that that's ftp user homedir.
-* system-config-network - konfiguruje interfejsy, tak że nie trzeba pamiętać
-  składni
-* pamiętaj o audit2allow -b - pomoze znaleść ew. bugi w kontekstach
+* audit2allow -b -> show avc's starting from last boot
 * rpm -q -f `which iostat` == dpkg -S iostat
 * system-config-authconfig + yum groupinstall "Directory clients" -> enable LDAP
   authentication for RHEL. Doing it on the commandline is a PITA. Files of inte-
@@ -89,10 +84,6 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
     @core
     openssh-clients
     %end
-* usefull tools:
-  elinks
-  lftp
-  mutt
 * to set up a local repo, the only thing that needs to be done is to serve
   ISO contents with vsftpd server
 * ttys configuration in RHEL can be found in /etc/init/start-ttys.conf and
@@ -108,7 +99,7 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
 * $$ - current process pid, usefull i.e. in a script:
     renice +19 -p $$ >/dev/null 2>&1
     ionice -c2 -n7 -p $$ >/dev/null 2>&1
-* instead of cutting/heading/tailing - USE AWK!:
+* instead of cutting/heading/tailing - use awk:
     locate -h | awk '/quiet/ {print $3}'
 * yy - copy a line in VI to the buffer, instead of ctrl+v and p
 * /etc/profile.d/ - environment variables, put an editor script here to change
@@ -278,7 +269,6 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   - add startxfce4 to /home/vespian/.vnc/xstartup (or install KDE/Gnome)
 * jobspec defining for fg/jobs/bg commands: %1
 * ps e <- show environment variables in the output
-* sar -A <- show all data gathered by  sar, usually in /var/log/sa/
 * run-parts <- runs commands from given directory
 * atq, at 12:01AM, at now + 3 minutes <- run a command once at specified time
 * /etc/cron.allow <- list users allowed to do crontab -e, /etc/cron.deny is ig-
