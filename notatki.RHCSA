@@ -28,11 +28,10 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
 * yum - poslugiwanie sie grupami:
     yum groupinfo base
     yum grouplist
-* RHEL ma upstarta <!>
+* RHEL uses upstarta
 * mount -o loop
 * system-config-firewall - na vanilla RHEL, jesli nei ma ferm-a ;) Ale
   generalnie to maja zwykly skrypt do zapisywania iptablesow
-* server ftp RHEL-a: vsftpd
 * minium pamięci na RHEL to 512 MB
 * yumdownloader --source vsftpd
 * yum-builddep selinux-policy.spec
