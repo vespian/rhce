@@ -52,6 +52,7 @@ IF SOMETHING DOES NOT WORK - CHECK /var/log/audit/auditlog !
   path=/dev/mapper/guests_vg-centos--test02 -l
   http://172.17.0.4/cblr/links/Centos-6.4-x86_64/ -x
   'ks=ftp://172.17.0.16/pub/anaconda-ks.cfg'
+ asdfasdfasfasdf
 * virt-clone --prompt
 * tworzenie kickstartu:
   - bazujac na /root/anaconda-ks.cfg
